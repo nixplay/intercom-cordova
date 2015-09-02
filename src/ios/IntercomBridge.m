@@ -8,7 +8,7 @@
 @implementation IntercomBridge : CDVPlugin
 
 - (void)pluginInitialize {
-    [Intercom setCordovaVersion:@"1.0.2"];
+    [Intercom setCordovaVersion:@"1.0.8"];
     #ifdef DEBUG
         [Intercom enableLogging];
     #endif
@@ -70,10 +70,10 @@
 }
 
 - (void)logEvent:(CDVInvokedUrlCommand*)command {
-    NSString* eventName    = command.arguments[0];
-    NSDictionary* metaData = command.arguments[1];
+    NSString *eventName = command.arguments[0];
+    NSDictionary *metaData = command.arguments[1];
 
-    if (metaData.count > 0) {
+    if ([metaData isKindOfClass:[NSDictionary class]] && metaData.count > 0) {
         [Intercom logEventWithName:eventName metaData:metaData];
     } else {
         [Intercom logEventWithName:eventName];
