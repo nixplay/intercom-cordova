@@ -1,4 +1,5 @@
 #import "IntercomBridge.h"
+#import "AppDelegate+IntercomPush.h"
 #import "Intercom.h"
 
 @interface Intercom (Cordoava)
@@ -8,13 +9,14 @@
 @implementation IntercomBridge : CDVPlugin
 
 - (void)pluginInitialize {
-    [Intercom setCordovaVersion:@"1.0.8"];
+    [Intercom setCordovaVersion:@"1.1.5"];
     #ifdef DEBUG
         [Intercom enableLogging];
     #endif
 
-    NSString* apiKey = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"IntercomApiKey"];
-    NSString* appId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"IntercomAppId"];
+    //Get app credentials from config.xml or the info.plist if they can't be found
+    NSString* apiKey = self.commandDelegate.settings[@"intercom-ios-api-key"] ?: [[NSBundle mainBundle] objectForInfoDictionaryKey:@"IntercomApiKey"];
+    NSString* appId = self.commandDelegate.settings[@"intercom-app-id"] ?: [[NSBundle mainBundle] objectForInfoDictionaryKey:@"IntercomAppId"];
 
     [Intercom setApiKey:apiKey forAppId:appId];
 }
@@ -115,6 +117,13 @@
     [self sendSuccess:command];
 }
 
+- (void)setPreviewPadding:(CDVInvokedUrlCommand*)command {
+    int x = [[command.arguments objectAtIndex:0] intValue];
+    int y = [[command.arguments objectAtIndex:1] intValue];
+    [Intercom setPreviewPaddingWithX:x y:y];
+    [self sendSuccess:command];
+}
+
 - (void)setupAPN:(CDVInvokedUrlCommand*)command {
     NSString *deviceToken = command.arguments[0];
     [Intercom setDeviceToken:[deviceToken dataUsingEncoding:NSUTF8StringEncoding]];
@@ -138,11 +147,6 @@
           UIRemoteNotificationTypeSound |
           UIRemoteNotificationTypeAlert)];
     }
-
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-        [Intercom registerForRemoteNotifications];
-    #pragma GCC diagnostic pop
 
     [self sendSuccess:command];
 }

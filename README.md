@@ -4,31 +4,45 @@ This is a plugin that allows your Cordova or PhoneGap app to use [Intercom for i
 
 ## Requirements
 
-Intercom for iOS supports iOS 7.x and iOS 8.x. Intercom for Android fully supports API 15 and above but can be integrated in app with API 9 (devices below API 15 will have no Intercom functionality).
+Intercom for iOS supports iOS 7.x, iOS 8.x and iOS 9.x. Intercom for Android fully supports API 15 and above but can be integrated in app with API 9 (devices below API 15 will have no Intercom functionality).
 
 ## Installation
 
-## Cordova
+### Cordova
 
 To install the plugin in your Cordova app, run the following:
 
-    cordova plugin add cordova-plugin-intercom --variable APP_ID="your_app_id" --variable IOS_API_KEY="ios_sdk-..." --variable ANDROID_API_KEY="android_sdk-..."
+    cordova plugin add cordova-plugin-intercom
 
-If your app doesn't support iOS or Android, you can omit that API key.
-
-## PhoneGap CLI
+### PhoneGap
 
 To add the plugin to your PhoneGap app, add the following to your `config.xml`:
 
-    <gap:plugin name="cordova-plugin-intercom" version="1.0.8" source="npm" >
-        <param name="APP_ID" value="your_app_id" />
-        <param name="IOS_API_KEY" value="ios_sdk-..." />
-        <param name="ANDROID_API_KEY" value="android_sdk-..." />
-    </gap:plugin>
+    <plugin name="cordova-plugin-intercom" version="~1.1.5" />
+    
+## Configuring Intercom
+
+To use Intercom, you must add your app's keys to your `config.xml`:
+
+    <preference name="intercom-app-id" value="your_app_id"/>
+    <preference name="intercom-ios-api-key" value="ios_sdk-..."/>
+    <preference name="intercom-android-api-key" value="android_sdk-..."/>
 
 If your app doesn't support iOS or Android, you can omit that API key.
 
-**Note:** Unfortunately, [PhoneGap build](https://build.phonegap.com) does not currently support [gradle builds](http://community.phonegap.com/nitobi/topics/phonegap-build-does-not-support-gradle-builds). This means on Android, our plugin only supports PhoneGap CLI or Cordova builds at this time.
+## Troubleshooting
+
+### Android Dex errors
+
+Some users experience Android build errors similar to the following:
+
+```
+UNEXPECTED TOP-LEVEL EXCEPTION:
+    com.android.dex.DexException: Multiple dex files define Landroid/support/annotation/AnimRes;
+    ...
+```
+
+If you are seeing errors like these it means that another plugin you are using is including Google Play Services or the Android Support library in an outdated way (usually by copying a jar). We recommend you suggest to the plugin vendor that they require this via a `<framework>` tag or Gradle instead.
 
 ## How should I use Intercom in my mobile app?
 
@@ -177,9 +191,9 @@ Intercom for mobile supports Push Notifications on iOS and Google Cloud Messagin
 
 To enable iOS push notifications, simply call `intercom.registerForPush()`.
 
-To enable Android push notifications, call `intercom.registerForPush('sender_id')`.
+To enable Android push notifications, call `intercom.registerForPush('sender_id')`. Where `sender_id` is your [Sender ID](https://developers.google.com/cloud-messaging/gcm#senderid) from the Google Developer Console.
 
-**Note:** _If you use PushPlugin to support non Intercom push notifications in addition to Intercom's notifications, you must use our fork which is available [here](https://github.com/intercom/PushPlugin). Install it with: `cordova plugin add https://github.com/intercom/PushPlugin.git`. We know this is not ideal but unfortunately it is necessary due to the inflexible nature of PushPlugin._
+**Note:** _If you use [phonegap-plugin-push](https://github.com/phonegap/phonegap-plugin-push) to support non Intercom push notifications in addition to Intercom's notifications, you must use our fork which is available [here](https://github.com/intercom/phonegap-plugin-push). Install it with: `cordova plugin add https://github.com/intercom/phonegap-plugin-push.git`. We know this is not ideal but unfortunately it is necessary due to the inflexible nature of PushPlugin._
 
 ## More information
 

@@ -1,5 +1,7 @@
 package io.intercom.android.sdk;
 
+import io.intercom.android.sdk.api.Api;
+
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CordovaInterface;
@@ -29,6 +31,7 @@ public class IntercomBridge extends CordovaPlugin {
 
     @Override protected void pluginInitialize() {
         this.setUpIntercom();
+        Bridge.getApi().ping();
     }
 
     @Override public void onStart() {
@@ -50,13 +53,15 @@ public class IntercomBridge extends CordovaPlugin {
                 try {
                     Context context = IntercomBridge.this.cordova.getActivity().getApplicationContext();
 
-                    HeaderInterceptor.setCordovaVersion(context, "1.0.8");
+                    HeaderInterceptor.setCordovaVersion(context, "1.1.5");
 
                     ApplicationInfo app = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
                     Bundle bundle = app.metaData;
 
-                    String apiKey = bundle.getString("intercom_api_key");
-                    String appId = bundle.getString("intercom_app_id");
+                    //Get app credentials from config.xml or the app bundle if they can't be found
+                    String apiKey = IntercomBridge.this.preferences.getString("intercom-android-api-key", bundle.getString("intercom_api_key"));
+                    String appId = IntercomBridge.this.preferences.getString("intercom-app-id", bundle.getString("intercom_app_id"));
+
                     Intercom.initialize(IntercomBridge.this.cordova.getActivity().getApplication(), apiKey, appId);
                 } catch (Exception e) {
                     System.err.println("[Intercom-Cordova] ERROR: Something went wrong when initializing Intercom. Have you set your APP_ID and ANDROID_API_KEY?");
@@ -153,6 +158,11 @@ public class IntercomBridge extends CordovaPlugin {
                 callbackContext.success();
             }
         },
+        setPreviewPadding {
+            @Override void performAction(JSONArray args, CallbackContext callbackContext, CordovaInterface cordova) {
+                callbackContext.error("[Intercom-Cordova] ERROR: Tried to set preview padding. This is only available on iOS.");
+            }
+        },
         setupGCM {
             @Override void performAction(JSONArray args, CallbackContext callbackContext, CordovaInterface cordova) {
                 String registrationId = args.optString(0);
@@ -167,7 +177,7 @@ public class IntercomBridge extends CordovaPlugin {
         },
         openGCMMessage {
             @Override void performAction(JSONArray args, CallbackContext callbackContext, CordovaInterface cordova) {
-                Intercom.client().openGCMMessage(cordova.getActivity().getIntent().getData());
+                Intercom.client().openGCMMessage(cordova.getActivity().getIntent());
                 callbackContext.success();
             }
         },
