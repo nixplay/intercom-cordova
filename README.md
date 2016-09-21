@@ -4,7 +4,7 @@ This is a plugin that allows your Cordova or PhoneGap app to use [Intercom for i
 
 ## Requirements
 
-Intercom for iOS supports iOS 8.x and iOS 9.x. Intercom for Android fully supports API 15 and above but can be integrated in app with API 9 (devices below API 15 will have no Intercom functionality).
+Intercom for iOS supports iOS 8.x, 9.x and iOS 10. Intercom for Android fully supports API 15 and above but can be integrated in app with API 9 (devices below API 15 will have no Intercom functionality).
 
 ## Installation
 
@@ -18,7 +18,7 @@ To install the plugin in your Cordova app, run the following:
 
 To add the plugin to your PhoneGap app, add the following to your `config.xml`:
 
-    <plugin name="cordova-plugin-intercom" version="~3.0.8" />
+    <plugin name="cordova-plugin-intercom" version="~3.0.11" />
     
 ## Configuring Intercom
 
@@ -199,7 +199,7 @@ To enable Android push notifications, your [Sender ID](https://developers.google
 
 ## More information
 
-You can find more detailed documentation about Intercom for mobile [here](http://docs.intercom.io/Install-on-your-mobile-product).
+You can find more detailed documentation about Intercom for mobile [here](https://docs.intercom.com/help-and-faqs/mobile/how-does-intercom-work-on-my-mobile-product).
 
 ## Thanks
 

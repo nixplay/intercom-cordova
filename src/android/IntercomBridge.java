@@ -62,7 +62,7 @@ public class IntercomBridge extends CordovaPlugin {
         try {
             Context context = IntercomBridge.this.cordova.getActivity().getApplicationContext();
             
-            CordovaHeaderInterceptor.setCordovaVersion(context, "3.0.8");
+            CordovaHeaderInterceptor.setCordovaVersion(context, "3.0.11");
 
             switch (IntercomPushManager.getInstalledModuleType()) {
                 case GCM: {
@@ -181,6 +181,12 @@ public class IntercomBridge extends CordovaPlugin {
                     visibility = Intercom.GONE;
                 }
                 Intercom.client().setInAppMessageVisibility(visibility);
+                callbackContext.success();
+            }
+        },
+        hideMessenger {
+            @Override void performAction(JSONArray args, CallbackContext callbackContext, CordovaInterface cordova) {
+                Intercom.client().hideMessenger();
                 callbackContext.success();
             }
         },
